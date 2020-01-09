@@ -2,6 +2,10 @@
 
 ## [v0.4.3](https://github.com/gojek/feast/tree/v0.4.3) (2020-01-08)
 
+**Fixed bugs:**
+
+- Bugfix for redis ingestion retries throwing NullPointerException on remote runners [\#417](https://github.com/gojek/feast/pull/417) ([khorshuheng](https://github.com/khorshuheng))
+
 [Full Changelog](https://github.com/gojek/feast/compare/v0.4.2...v0.4.3)
 
 ## [v0.4.2](https://github.com/gojek/feast/tree/v0.4.2) (2020-01-07)
