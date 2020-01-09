@@ -74,6 +74,10 @@
 
 [Full Changelog](https://github.com/gojek/feast/compare/v0.3.3...v0.3.4)
 
+**Merged pull requests:**
+
+- Make redis key creation more determinisitic [\#380](https://github.com/gojek/feast/pull/380) ([zhilingc](https://github.com/zhilingc))
+
 ## [v0.3.3](https://github.com/gojek/feast/tree/v0.3.3) (2019-12-18)
 
 [Full Changelog](https://github.com/gojek/feast/compare/v0.3.2...v0.3.3)
