@@ -90,8 +90,12 @@ class Client:
     """
 
     def __init__(
-        self, core_url: str = None, serving_url: str = None, project: str = None,
-        core_secure: bool = None, serving_secure: bool = None
+        self,
+        core_url: str = None,
+        serving_url: str = None,
+        project: str = None,
+        core_secure: bool = None,
+        serving_secure: bool = None,
     ):
         """
         The Feast Client should be initialized with at least one service url
@@ -245,7 +249,9 @@ class Client:
 
         if self.__core_channel is None:
             if self.core_secure or self.core_url.endswith(":443"):
-                self.__core_channel = grpc.secure_channel(self.core_url, grpc.ssl_channel_credentials())
+                self.__core_channel = grpc.secure_channel(
+                    self.core_url, grpc.ssl_channel_credentials()
+                )
             else:
                 self.__core_channel = grpc.insecure_channel(self.core_url)
 
@@ -277,7 +283,9 @@ class Client:
 
         if self.__serving_channel is None:
             if self.serving_secure or self.serving_url.endswith(":443"):
-                self.__serving_channel = grpc.secure_channel(self.serving_url, grpc.ssl_channel_credentials())
+                self.__serving_channel = grpc.secure_channel(
+                    self.serving_url, grpc.ssl_channel_credentials()
+                )
             else:
                 self.__serving_channel = grpc.insecure_channel(self.serving_url)
 
@@ -755,7 +763,7 @@ class Client:
         max_workers: int = max(CPU_COUNT - 1, 1),
         disable_progress_bar: bool = False,
         timeout: int = KAFKA_CHUNK_PRODUCTION_TIMEOUT,
-    ) -> None:
+    ) -> str:
         """
         Loads feature data into Feast for a specific feature set.
 
@@ -791,8 +799,9 @@ class Client:
                 Timeout in seconds to wait for completion.
 
         Returns:
-            None:
-                None
+            str:
+                Generated Dataset ID for the ingested dataset. This ID can be used to reference
+                rows specifically written during this ingestion.
         """
 
         if isinstance(feature_set, FeatureSet):
@@ -879,7 +888,7 @@ class Client:
             print("Removing temporary file(s)...")
             shutil.rmtree(dir_path)
 
-        return None
+        return dataset_id
 
 
 def _generate_dataset_id(feature_set: FeatureSet) -> str:
