@@ -23,8 +23,8 @@ COPY protos/ protos/
 # Setting Maven repository .m2 directory relative to /build folder gives the
 # user to optionally use cached repository when building the image by copying
 # the existing .m2 directory to $FEAST_REPO_ROOT/.m2
-ENV MAVEN_OPTS="-Dmaven.repo.local=/build/.m2/repository -DdependencyLocationsEnabled=false"
-COPY pom.xml .m2/* .m2/
+# ENV MAVEN_OPTS="-Dmaven.repo.local=/build/.m2/repository -DdependencyLocationsEnabled=false"
+# COPY pom.xml .m2/* .m2/
 RUN mvn dependency:go-offline -DexcludeGroupIds:dev.feast 2>/dev/null || true
 
 COPY . .
