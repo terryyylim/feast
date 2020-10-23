@@ -39,7 +39,7 @@ jobs:
           file: infra/docker/${{ matrix.component }}/Dockerfile
           tags: feastdev/feast-${{ matrix.component }}:test
           build-args: |
-            REVISION=${GITHUB_REF}
+            REVISION=test
       - name: Echo Tag refs
         run: echo ${GITHUB_REF}
 # jobs:
