@@ -21,7 +21,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: feastdev/feast-${{ matrix.component }}:${GITHUB_SHA}
+          tags: feastdev/feast-${{ matrix.component }}:test
           build-args: |
             REVISION=${GITHUB_REF}
       - name: Echo Tag refs
