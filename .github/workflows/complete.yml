@@ -10,6 +10,7 @@ jobs:
         component: [core]
     env:
       GITHUB_PR_SHA: ${{ github.event.pull_request.head.sha }}
+      MAVEN_CACHE: gs://feast-templocation-kf-feast/.m2.2020-08-19.tar
     steps:
       - uses: actions/checkout@v2
       - name: Set up QEMU
