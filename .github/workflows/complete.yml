@@ -24,7 +24,7 @@ jobs:
       env:
         RELEASE_VERSION: ${{ steps.get_release_version.outputs.release_version }}
       run: |
-        source infra/scripts/setup-common-functions.sh
+        ./infra/scripts/setup-common-functions.sh
         SEMVER_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
         if echo "${RELEASE_VERSION}" | grep -P "$SEMVER_REGEX" &>/dev/null ; then
           echo ::set-output name=highest_semver_tag::$(get_tag_release -m)
