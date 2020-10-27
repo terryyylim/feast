@@ -33,8 +33,8 @@ jobs:
     - name: Print versions
       run: |
         echo "${{ env.RELEASE_VERSION }}"
-        echo "${{ env.VERSION_WITHOUT_PREFIX}"
-        echo "${{ env.GITHUB_REF#refs/*/}"
+        echo "${{ env.VERSION_WITHOUT_PREFIX }}"
+        echo "${{ env.GITHUB_REF#refs/*/ }}"
 
   # build-push-docker-images:
   #   runs-on: [self-hosted]
