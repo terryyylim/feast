@@ -8,6 +8,8 @@ jobs:
     outputs:
       release_version: ${{ steps.get_release_version.outputs.release_version }}
     steps:
+    - name: Installations
+      run: sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install ia32-libs
     - name: Get release version
       id: get_release_version
       run: |
