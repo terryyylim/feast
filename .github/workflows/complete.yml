@@ -3,6 +3,28 @@ name: complete
 on: [push, pull_request]
 
 jobs:
+  get-version-test:
+    runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.get_release_version.outputs.release_version }}
+    steps:
+    - name: Get release version
+      id: get_release_version
+      run: |
+        source infra/scripts/setup-common-functions.sh
+        echo ::set-output name=release_version::${GITHUB_REF#refs/*/}
+        SEMVER_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
+        if echo "${RELEASE_VERSION}" | grep -P "$SEMVER_REGEX" &>/dev/null ; then
+          echo "VERSION_WITHOUT_PREFIX=${RELEASE_VERSION:1}" >> $GITHUB_ENV
+          echo "HIGHEST_SEMVER_TAG=$(get_tag_release -m)" >> $GITHUB_ENV
+        fi
+    - name: Check output
+      env:
+        RELEASE_VERSION: ${{ steps.vars.outputs.release_version }}
+      run: |
+        echo $RELEASE_VERSION
+        echo ${{ steps.vars.outputs.release_version }}
+
   build-push-docker-images:
     runs-on: [self-hosted]
     strategy:
