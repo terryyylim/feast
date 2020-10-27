@@ -14,8 +14,7 @@ jobs:
         echo ::set-output name=release_version::${GITHUB_REF#refs/*/}
         SEMVER_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
         
-        local GIT_TAG_CMD="git tag -l"
-        local OPTIND opt
+        GIT_TAG_CMD="git tag -l"
         while getopts "ms" opt; do
           case "${opt}" in
             m)
@@ -32,8 +31,8 @@ jobs:
           esac
         done
         shift $((OPTIND-1))
-        local FILTERED_TAGS=$(bash -c "$GIT_TAG_CMD" | grep -P "$TAG_REGEX")
-        local SEMVER_SORTED_TAGS=$(echo "$FILTERED_TAGS" | sed -e '/-/!{s/$/_/}' | sort -rV \ | sed -e 's/_$//')
+        FILTERED_TAGS=$(bash -c "$GIT_TAG_CMD" | grep -P "$TAG_REGEX")
+        SEMVER_SORTED_TAGS=$(echo "$FILTERED_TAGS" | sed -e '/-/!{s/$/_/}' | sort -rV \ | sed -e 's/_$//')
 
         if echo "${RELEASE_VERSION}" | grep -P "$SEMVER_REGEX" &>/dev/null ; then
           echo "VERSION_WITHOUT_PREFIX=${RELEASE_VERSION:1}" >> $GITHUB_ENV
