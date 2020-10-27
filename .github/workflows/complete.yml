@@ -15,7 +15,7 @@ jobs:
       env:
         RELEASE_VERSION: ${{ steps.vars.outputs.release_version }}
       run: |
-        echo $RELEASE_VERSION
+        echo "${RELEASE_VERSION}"
         echo ${{ steps.vars.outputs.release_version }}
   
   print-version:
@@ -23,8 +23,9 @@ jobs:
     steps:
     - name: Print versions
       run: |
-        echo ${RELEASE_VERSION}
-        echo ${RELEASE_VERSION:1}
+        echo "${RELEASE_VERSION}"
+        echo "${RELEASE_VERSION:1}"
+        echo ${GITHUB_REF#refs/*/}
 
   # build-push-docker-images:
   #   runs-on: [self-hosted]
