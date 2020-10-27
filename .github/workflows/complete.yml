@@ -22,9 +22,12 @@ jobs:
         RELEASE_VERSION: ${{ steps.get_release_version.outputs.release_version }}
         VERSION_WITHOUT_PREFIX: ${{ steps.get_release_version_without_prefix.outputs.version_without_prefix }}
       run: |
+        echo "ok1"
         echo "${RELEASE_VERSION}"
         echo "${VERSION_WITHOUT_PREFIX}"
+        echo "ok2"
         echo ${{ steps.vars.outputs.release_version }}
+        echo ${{ steps.vars.outputs.version_without_prefix }}
   
   print-version:
     runs-on: ubuntu-latest
@@ -32,8 +35,8 @@ jobs:
     steps:
     - name: Print versions
       run: |
-        echo "${{ env.RELEASE_VERSION }}"
-        echo "${{ env.VERSION_WITHOUT_PREFIX }}"
+        echo "${{ needs.get-version-test.release_version }}"
+        echo "${{ needs.get-version-test.version_without_prefix }}"
         echo "${GITHUB_REF#refs/*/}"
 
   # build-push-docker-images:
