@@ -19,12 +19,13 @@ jobs:
         RELEASE_VERSION: ${{ steps.get_release_version.outputs.release_version }}
       run: |
         echo ::set-output name=version_without_prefix::${RELEASE_VERSION:1}
+    - name: Install functions
+      run: ./infra/scripts/setup-common-functions.sh
     - name: Get highest semver
       id: get_highest_semver
       env:
         RELEASE_VERSION: ${{ steps.get_release_version.outputs.release_version }}
       run: |
-        ./infra/scripts/setup-common-functions.sh
         SEMVER_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
         if echo "${RELEASE_VERSION}" | grep -P "$SEMVER_REGEX" &>/dev/null ; then
           echo ::set-output name=highest_semver_tag::$(get_tag_release -m)
