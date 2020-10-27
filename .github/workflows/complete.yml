@@ -16,7 +16,7 @@ jobs:
     - name: Get release version without prefix
       id: get_release_version_without_prefix
       run: |
-        echo ::set-output name=version_without_prefix::${RELEASE_VERSION:1}
+        echo ::set-output name=version_without_prefix::${GITHUB_REF#refs/*/:1}
     - name: Check output
       env:
         RELEASE_VERSION: ${{ steps.get_release_version.outputs.release_version }}
