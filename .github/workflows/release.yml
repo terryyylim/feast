@@ -80,6 +80,7 @@ jobs:
           RELEASE_VERSION: ${{ needs.get-version.outputs.release_version }}
         with:
           push: true
+          context: infra/docker/${{ matrix.component }}
           file: infra/docker/${{ matrix.component }}/Dockerfile
           tags: feastdev/feast-${{ matrix.component }}:${{ needs.get-version.outputs.release_version }}
           build-args: |
@@ -93,30 +94,31 @@ jobs:
         with:
           if: ${VERSION_WITHOUT_PREFIX} == ${HIGHEST_SEMVER_TAG:1}
           push: true
+          context: infra/docker/${{ matrix.component }}
           file: infra/docker/${{ matrix.component }}/Dockerfile
           tags: feastdev/feast-${{ matrix.component }}:latest
           build-args: |
             REVISION=${RELEASE_VERSION}
 
-  publish-helm-charts:
-    runs-on:  ubuntu-latest
-    needs: get-version
-    env:
-      HELM_VERSION: v2.16.9
-    steps:
-      - uses: actions/checkout@v2
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-        with:
-          version: '290.0.1'
-          export_default_credentials: true
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-      - run: gcloud auth configure-docker --quiet
-      - name: Validate chart versions
-        run: make lint-versions
-      - name: Remove previous Helm
-        run: sudo rm -rf $(which helm)
-      - name: Install Helm
-        run: ./infra/scripts/install-helm.sh
-      - name: Publish Helm charts
-        run: ./infra/scripts/sync-helm-charts.sh
+  # publish-helm-charts:
+  #   runs-on:  ubuntu-latest
+  #   needs: get-version
+  #   env:
+  #     HELM_VERSION: v2.16.9
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+  #       with:
+  #         version: '290.0.1'
+  #         export_default_credentials: true
+  #         project_id: ${{ secrets.GCP_PROJECT_ID }}
+  #         service_account_key: ${{ secrets.GCP_SA_KEY }}
+  #     - run: gcloud auth configure-docker --quiet
+  #     - name: Validate chart versions
+  #       run: make lint-versions
+  #     - name: Remove previous Helm
+  #       run: sudo rm -rf $(which helm)
+  #     - name: Install Helm
+  #       run: ./infra/scripts/install-helm.sh
+  #     - name: Publish Helm charts
+  #       run: ./infra/scripts/sync-helm-charts.sh
