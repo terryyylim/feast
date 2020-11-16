@@ -48,7 +48,7 @@ jobs:
     needs: get-version
     strategy:
       matrix:
-        component: [core, serving, jobservice, jupyter]
+        component: [core]
     env:
       MAVEN_CACHE: gs://feast-templocation-kf-feast/.m2.2020-08-19.tar
       DOCKER_BUILDKIT: '1'
@@ -106,26 +106,27 @@ jobs:
           VERSION_WITHOUT_PREFIX: ${{ needs.get-version.outputs.version_without_prefix }}
           HIGHEST_SEMVER_TAG: ${{ needs.get-version.outputs.highest_semver_tag }}
         run: |
+          SEMVER_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
           if echo "${RELEASE_VERSION}" | grep -P "$SEMVER_REGEX" &>/dev/null ; then
-            if [ "${VERSION_WITHOUT_PREFIX}" = "${HIGHEST_SEMVER_TAG:1}" ]
-            then
-              docker build --build-arg VERSION=$RELEASE_VERSION \
-                -t feastdev/feast-${{ matrix.component }}:test \
-                -t feastdev/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX} \
-                -t gcr.io/kf-feast/feast-${{ matrix.component }}:test \
-                -t gcr.io/kf-feast/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX} \
-                -f infra/docker/${{ matrix.component }}/Dockerfile .
-              docker push feastdev/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX}
-              docker push feastdev/feast-${{ matrix.component }}:test
-              docker push gcr.io/kf-feast/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX}
-              docker push gcr.io/kf-feast/feast-${{ matrix.component }}:test
-            else
-              docker build --build-arg VERSION=$RELEASE_VERSION \
-                -t gcr.io/kf-feast/feast-${{ matrix.component }}:${GITHUB_SHA} \
-                -t gcr.io/kf-feast/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX} \
-                -f infra/docker/${{ matrix.component }}/Dockerfile .
-              docker push gcr.io/kf-feast/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX}
-            fi
+            docker build --build-arg VERSION=$RELEASE_VERSION \
+            -t gcr.io/kf-feast/feast-${{ matrix.component }}:${GITHUB_SHA} \
+            -t gcr.io/kf-feast/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX} \
+            -f infra/docker/${{ matrix.component }}/Dockerfile .
+            docker push gcr.io/kf-feast/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX}
+            exit 0
+          fi
+          if [ "${VERSION_WITHOUT_PREFIX}" = "${HIGHEST_SEMVER_TAG:1}" ]
+          then
+            docker build --build-arg VERSION=$RELEASE_VERSION \
+              -t feastdev/feast-${{ matrix.component }}:test \
+              -t feastdev/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX} \
+              -t gcr.io/kf-feast/feast-${{ matrix.component }}:test \
+              -t gcr.io/kf-feast/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX} \
+              -f infra/docker/${{ matrix.component }}/Dockerfile .
+            docker push feastdev/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX}
+            docker push feastdev/feast-${{ matrix.component }}:test
+            docker push gcr.io/kf-feast/feast-${{ matrix.component }}:${VERSION_WITHOUT_PREFIX}
+            docker push gcr.io/kf-feast/feast-${{ matrix.component }}:test
           fi
 
           # docker build --build-arg VERSION=$RELEASE_VERSION  
